@@ -1,4 +1,5 @@
 Scrapy>=2.11,<3
 requests>=2.31,<3
 Pillow>=8.1.1
+openpyxl>=3.1,<4
 pytest>=8,<9

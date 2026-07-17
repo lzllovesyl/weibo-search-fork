@@ -28,6 +28,10 @@ class SearchSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         self.configure(settings or get_project_settings())
 
+    async def start(self):
+        for request in self.start_requests():
+            yield request
+
     def configure(self, settings):
         self.project_settings = settings
         self.keyword_list = self.load_keyword_list(

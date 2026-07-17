@@ -127,3 +127,37 @@ $ scrapy crawl search -s JOBDIR=crawls/search
 > ![](https://github.com/dataabc/media/blob/master/weiboSpider/images/cookie2.png)
 > 4.依此点击Chrome开发者工具中的Network->Name中的weibo.cn->Headers->Request Headers，"Cookie:"后的值即为我们要找的cookie值，复制即可，如图所示：
 > ![](https://github.com/dataabc/media/blob/master/weiboSpider/images/cookie3.png)
+
+## 水印相机行业监控模式
+当前 fork 默认面向水印相机行业监控，默认关键词为：
+
+```
+马克水印相机, 水印照片, 水印相机, 水印打卡, 今日水印相机, 元道经纬, 外勤记录, 外勤打卡, 外勤相机
+```
+
+默认搜索最近 30 天，输出不再按关键词拆分 CSV，而是写入同一个 Excel：
+
+- `结果文件/水印相机行业微博.xlsx`
+- `结果文件/水印相机行业微博.json`
+- `结果文件/水印相机行业微博看板.html`
+
+同一条微博命中多个关键词时，会按微博 `id` 合并，只输出一条记录，并在第一列 `关键词` 中合并命中的关键词。默认只导出清洗规则判断为与水印相机、外勤打卡、客户反馈或需求相关的内容。
+
+常用运行方式：
+
+```powershell
+$env:WEIBO_COOKIE="你的微博 Cookie"
+python -m scrapy crawl search -s JOBDIR=crawls/watermark-industry
+```
+
+常用环境变量：
+
+```powershell
+$env:WEIBO_KEYWORDS="马克水印相机,水印照片,水印相机,水印打卡,今日水印相机,元道经纬,外勤记录,外勤打卡,外勤相机"
+$env:WEIBO_START_DATE="2026-06-17"
+$env:WEIBO_END_DATE="2026-07-17"
+$env:WEIBO_LIMIT_RESULT="10000"
+$env:WEIBO_EXPORT_REJECTED="1"  # 可选：导出被规则排除的内容，便于人工复核规则
+```
+
+清洗规则沉淀在 `weibo/cleaning_rules.py`。当前主要排除粉圈明星、头像壁纸素材、泛摄影相册、长文噪音等弱相关内容；保留包含水印相机产品、外勤/打卡/考勤场景、客户反馈或需求表达的微博。
